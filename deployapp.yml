@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: myjavaapp-pod
-        image: ravidevops26/ravilogin:2
+        image: ravidevops26/ravilogin:1
         ports:
         - containerPort:  8080
           protocol: TCP
