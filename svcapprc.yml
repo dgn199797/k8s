@@ -4,7 +4,7 @@ metadata:
   name: mytomcat-svc
   labels:
     app: mytomcat
-    version: 2.7.01
+    version: 2.7.02
 spec:
   type: NodePort
   ports:
@@ -13,4 +13,4 @@ spec:
     protocol: TCP
   selector:
     app: mytomcat
-    version: 2.7.01
+    version: 2.7.02

@@ -6,15 +6,15 @@ spec:
   replicas: 2
   selector:
     app: mytomcat
-    version: 2.7.01
+    version: 2.7.02
   template:
     metadata:
       labels:
         app: mytomcat
-        version: 2.7.01
+        version: 2.7.02
     spec:
       containers:
       - name: mytomcat-pod
-        image: ravidevops26/ravilogin:1
+        image: ravidevops26/ravilogin:2
         ports:
         - containerPort: 8080
