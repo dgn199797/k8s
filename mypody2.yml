@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hello-pod2
+spec:
+  containers:
+    - name: first-container
+      image: tomcat: 8.0
+      ports:
+      - containerPort: 7500
+    - name: second-container
+      image: mongoDB
+      ports:
+      - containerPort: 7501
