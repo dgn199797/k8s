@@ -1,6 +1,6 @@
+rm /etc/containerd/config.toml
+systemctl restart containerd
+
+
 https://stackoverflow.com/questions/46172741/kubernetes-cluster-master-node-not-ready
-
-
-
-
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
