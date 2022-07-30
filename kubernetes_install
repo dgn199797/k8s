@@ -1,7 +1,63 @@
+Install cri-dockerd, following the instructions in that source code repository.
+
+Link: https://computingforgeeks.com/install-mirantis-cri-dockerd-as-docker-engine-shim-for-kubernetes/
+
+Steps:
+
+sudo apt update
+
+sudo apt install git wget curl
+
+VER=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest|grep tag_name | cut -d '"' -f 4|sed 's/v//g')
+
+echo $VER
+
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v${VER}/cri-dockerd-${VER}.amd64.tgz
+
+tar xvf cri-dockerd-${VER}.amd64.tgz
+
+sudo mv cri-dockerd/cri-dockerd /usr/local/bin/
+
+cri-dockerd --version
+
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service
+
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket
+
+sudo mv cri-docker.socket cri-docker.service /etc/systemd/system/
+
+sudo sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/system/cri-docker.service
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable cri-docker.service
+
+sudo systemctl enable --now cri-docker.socket
+
+systemctl status cri-docker.socket
+
+Now install kubeadm, kubectl and kubelet on all 3 instances
+
+we can test pulling container images for Kubernetes like below:
+sudo kubeadm config images pull --cri-socket /run/cri-dockerd.sock 
+
+On master type like below:
+sudo kubeadm init \
+  --pod-network-cidr=192.168.0.0/16 \
+  --cri-socket /run/cri-dockerd.sock
+  
+  On master:
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  
+  on all nodes:
+  kubeadm join 172.31.22.183:6443 --token sxayaf.lz8ptz9d6zo9191s \
+        --discovery-token-ca-cert-hash sha256:c8a5a1119b24dbae468d27e1f0a29a43ac347bf03f97a5601f1536b519528d8c --cri-socket /run/cri-dockerd.sock
+        
 Deploy Pod Network to Cluster:
 
-A Pod Network is a way to allow communication between different nodes in the cluster.
-
+A Pod Network is a way to allow communication between different nodes in the cluster like below:
 sudo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 
